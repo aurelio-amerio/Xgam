@@ -10,7 +10,7 @@ RUN apt-get update && yes|apt-get upgrade
 RUN apt-get update && apt-get install -y curl git time wget build-essential unzip gfortran libcurl4 libcurl4-openssl-dev cmake
 
 # Install cfitsio
-WORKDIR /tmp
+WORKDIR /
 RUN wget -O cfitsio_latest.tar.gz http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio_latest.tar.gz
 RUN mkdir /cfitsio_latest && tar -C /cfitsio_latest --strip-components=1 -xvf cfitsio_latest.tar.gz
 WORKDIR /cfitsio_latest
@@ -20,7 +20,6 @@ RUN make && make install && make clean
 # Install HEALPIX
 #RUN wget -O Healpix_latest.tar.gz "https://sourceforge.net/projects/healpix/files/latest/download"
 #RUN mkdir /Healpix_latest && unzip -d /Healpix_latest Healpix_latest.tar.gz
-WORKDIR /tmp
 RUN wget -O Healpix_latest.zip "https://sourceforge.net/projects/healpix/files/Healpix_3.60/Healpix_3.60_2019Dec18.zip/download"
 RUN mkdir /Healpix_latest && unzip -d /Healpix_latest Healpix_latest.zip
 WORKDIR /Healpix_latest
@@ -33,18 +32,18 @@ RUN F_PARAL=1 FITSDIR=/cfitsio_latest/lib/ FITSINC=/cfitsio_latest/include ./con
 RUN make && make test && make clean
 
 # Install Polspice
-RUN mkdir /PolSpice
-WORKDIR /Polspice/
-RUN wget -O PolSpice.tar.gz http://www2.iap.fr/users/hivon/software/PolSpice/ftp/PolSpice_v03-06-06.tar.gz
-RUN tar --strip-components=1 -xvf PolSpice.tar.gz && mkdir build
-WORKDIR /Polspice/build
-RUN cmake .. -DCFITSIO=/cfitsio_latest/lib -DHEALPIX=/Healpix_latest
-RUN make && make clean
-RUN /Polspice/bin/spice -help
+# RUN mkdir /PolSpice
+# WORKDIR /Polspice/
+# RUN wget -O PolSpice.tar.gz http://www2.iap.fr/users/hivon/software/PolSpice/ftp/PolSpice_v03-06-06.tar.gz
+# RUN tar --strip-components=1 -xvf PolSpice.tar.gz && mkdir build
+# WORKDIR /Polspice/build
+# RUN cmake .. -DCFITSIO=/cfitsio_latest/lib -DHEALPIX=/Healpix_latest
+# RUN make && make clean
+# RUN /Polspice/bin/spice -help
 
 WORKDIR /tmp
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh
-RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /archive/home/Xgam/fermi_data/photon && mkdir /archive/home/Xgam/fermi_data/output && mkdir /run_xgam/
+RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/
 
 # Install Anaconda2
 RUN bash Miniconda2-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda2
@@ -57,10 +56,6 @@ RUN conda create -n fermi -c conda-forge/label/cf201901 -c fermi fermitools
 RUN conda install -y --name fermi healpy numba
 
 RUN apt-get update && apt-get install -y libgl1-mesa-dev
-
-# download fits
-WORKDIR /archive/home/Xgam/fermi_data/photon
-RUN wget -m -P . -nH --cut-dirs=4 -np -e robots=off https://heasarc.gsfc.nasa.gov/FTP/fermi/data/lat/weekly/photon/
 # Clone Xgam
 WORKDIR /run_xgam
 #RUN ls -lh
@@ -72,18 +67,18 @@ COPY Xgam /run_xgam/Xgam
 #RUN ls /run_xgam/Xgam/bin -lh
 
 # Creating bashrc file
-RUN echo "echo 'Setting Xgam environment...'" > /root/.bashrc \
-#RUN echo "export PATH=/run_xgam/anaconda2/bin:$PATH" >> /root/.bashrc \
-   && echo "export PATH=/run_xgam/anaconda2/envs/fermi/bin:$PATH" >> /root/.bashrc \
-   && echo "export PYTHONPATH=:/run_xgam/:${PYTHONPATH}" >> /root/.bashrc \
-   && echo "export PATH=/run_xgam/Xgam/bin:${PATH}" >> /root/.bashrc \
-   && echo "export P8_DATA=/archive/home/Xgam/fermi_data" >> /root/.bashrc \
-   && echo "export X_OUT=/archive/home/Xgam/fermi_data" >> /root/.bashrc \
-   && echo "export X_OUT_FIG=/archive/home/Xgam/fermi_data" >> /root/.bashrc \
-   && echo "source activate fermi" >> /root/.bashrc \
-   && echo "export HEALPIX=/Healpix_latest" >> /root/.bashrc \
-   && echo "echo 'Done.'" >> /root/.bashrc \
-RUN echo "bashrc file:" && less /root/.bashrc
+RUN echo "echo 'Setting Xgam environment...'" > /run_xgam/.bashrc \
+#RUN echo "export PATH=/run_xgam/anaconda2/bin:$PATH" >> /run_xgam/.bashrc \
+   && echo "export PATH=/run_xgam/anaconda2/envs/fermi/bin:$PATH" >> /run_xgam/.bashrc \
+   && echo "export PYTHONPATH=:/run_xgam/:${PYTHONPATH}" >> /run_xgam/.bashrc \
+   && echo "export PATH=/run_xgam/Xgam/bin:${PATH}" >> /run_xgam/.bashrc \
+   && echo "export P8_DATA=/archive/home/Xgam/fermi_data" >> /run_xgam/.bashrc \
+   && echo "export X_OUT=/archive/home/Xgam/fermi_data" >> /run_xgam/.bashrc \
+   && echo "export X_OUT_FIG=/archive/home/Xgam/fermi_data" >> /run_xgam/.bashrc \
+   && echo "source activate fermi" >> /run_xgam/.bashrc \
+   && echo "export HEALPIX=/Healpix_latest" >> /run_xgam/.bashrc \
+   && echo "echo 'Done.'" >> /run_xgam/.bashrc \
+RUN echo "bashrc file:" && less /run_xgam/.bashrc
 
 # WORKDIR /archive/home/Xgam/fermi_data
 # RUN mkdir /home/simone/
@@ -92,8 +87,8 @@ RUN echo "bashrc file:" && less /root/.bashrc
 
 # clear unused files
 RUN apt-get clean
-RUN rm -f /tmp/*
-RUN rm -f /Polspice/PolSpice.tar.gz
+RUN rm -rf /tmp/*
 
-CMD bash
+ENTRYPOINT ["/bin/bash","-c","source /run_xgam/.bashrc"]
+# CMD []
 #CMD ["/bin/bash","-c","source /run_xgam/.bashrc && /home/simone/bash_script.sh"]

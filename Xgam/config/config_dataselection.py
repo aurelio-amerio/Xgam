@@ -32,8 +32,8 @@ STOP_WEEK = 50
 
 # minumum and maximum energy and energy bin number to generate fits file
 E_MIN = 1000
-E_MAX = 1000000
-E_NBINS = 2
+E_MAX = 10000
+E_NBINS = 1
 EBINNING_ARRAY = np.logspace(np.log10(E_MIN), np.log10(E_MAX), E_NBINS+1)
 EBINNING_FILE = gtEbindef(EBINNING_ARRAY, file_name='ebinning.txt')
 SC_FILE = os.path.join(FT_DATA_FOLDER, 'spacecraft', 'lat_spacecraft_merged.fits')
