@@ -24,11 +24,12 @@ from Xgam import FT_DATA_FOLDER
 from Xgam.utils.ScienceTools_ import gtEbindef
 
 
-OUT_LABEL = 'w9w50_SV_t32'
+
+OUT_LABEL = 'w9w632_SV_t32'
 
 #start and stop week number to be selected in FT1 and FT2 files
 START_WEEK = 9
-STOP_WEEK = 50
+STOP_WEEK = 632
 
 # minumum and maximum energy and energy bin number to generate fits file
 E_MIN = 1000
@@ -43,7 +44,7 @@ ZMAX = 90
 EVCLASS = 2048
 EVTYPE = 32
 IRFS = 'P8R3_SOURCEVETO_V2'
-HPX_MAP_ORDER = 5
+HPX_MAP_ORDER = 6
 FILTER_CUT='DATA_QUAL==1&&LAT_CONFIG==1&&LAT_MODE==5&&IN_SAA!=T'+\
                '&&((ABS(ROCK_ANGLE)<52))'
 

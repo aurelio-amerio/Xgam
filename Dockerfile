@@ -44,7 +44,7 @@ RUN /Polspice/bin/spice -help
 
 WORKDIR /tmp
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh
-RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /archive/home/Xgam/fermi_data/photon && mkdir /archive/home/Xgam/fermi_data/output && mkdir /run_xgam/
+RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/ && mkdir /run_xgam/output
 
 # Install Anaconda2
 RUN bash Miniconda2-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda2
@@ -59,8 +59,8 @@ RUN conda install -y --name fermi healpy numba
 RUN apt-get update && apt-get install -y libgl1-mesa-dev
 
 # download fits
-WORKDIR /archive/home/Xgam/fermi_data/photon
-RUN wget -m -P . -nH --cut-dirs=4 -np -e robots=off https://heasarc.gsfc.nasa.gov/FTP/fermi/data/lat/weekly/photon/
+# WORKDIR /archive/home/Xgam/fermi_data/photon
+# RUN wget -m -P . -nH --cut-dirs=4 -np -e robots=off https://heasarc.gsfc.nasa.gov/FTP/fermi/data/lat/weekly/photon/
 # Clone Xgam
 WORKDIR /run_xgam
 #RUN ls -lh

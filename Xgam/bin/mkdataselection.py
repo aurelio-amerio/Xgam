@@ -19,8 +19,8 @@
       4) gtltcube
       5) gtexpcube2
    If an output file already exists it won't be overwritten, because the
-   command won't be run. 
-   A configuration file is needed, in which all the ScienceTools parameters 
+   command won't be run.
+   A configuration file is needed, in which all the ScienceTools parameters
    you want to set must be declared. See 1yr_st_aniso_config.py for e.g.
 """
 
@@ -47,9 +47,12 @@ PARSER = argparse.ArgumentParser(description=__description__,
                                  formatter_class=formatter)
 PARSER.add_argument('-c', '--config', type=str, required=True,
                     help='the input configuration file')
-PARSER.add_argument('--gtltcube', type=ast.literal_eval, choices=[True, False], 
+PARSER.add_argument('--gtltcube', type=ast.literal_eval, choices=[True, False],
                     default=True,
                     help='False if gtltcube command must not be run')
+PARSER.add_argument('-o', '--output', type=str, required=False,
+                    default=None,
+                    help='output folder')
 
 if (sys.version_info > (3, 0)):
 	from importlib.machinery import SourceFileLoader
@@ -65,7 +68,7 @@ else:
 		global data
 		data = imp.load_source('data', '', f)
 		f.close()
-    
+
 def mkSTanalysis(**kwargs):
     """Science Tools analysis chain
     """
@@ -84,6 +87,13 @@ def mkSTanalysis(**kwargs):
     #FT2_FILE = mergeft2(SC_FOLDER, 'FT2_w%i-%i.txt'%(start_week, end_week), \
     #                       start_week, end_week)
     out_label = data.OUT_LABEL
+	# if kwargs["output"] is not None:
+	# 	output_path = kwargs["output"]
+	# 	txt_out_files = open(output_path+'/'+out_label+'_outfiles.txt', 'w')
+	# else:
+	# 	if not os.path.isdir('output'):
+	# 		os.mkdir("output")
+    # 	txt_out_files = open('output/'+out_label+'_outfiles.txt', 'w')
     txt_out_files = open('output/'+out_label+'_outfiles.txt', 'w')
 
     from Xgam.utils.ScienceTools_ import gtselect
