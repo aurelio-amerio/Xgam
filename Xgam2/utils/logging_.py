@@ -46,12 +46,12 @@ def startmsg():
     """
     BUILD_DATE = '2019-2020'
     FERMI_DATA_RELEASE = 'P8R3_V2'
-    print(('\n    Welcome to Xgam (built on %s).\n' %BUILD_DATE))
+    print('\n    Welcome to Xgam (built on %s).\n' %BUILD_DATE)
     print('    Autors: Michela Negro, NASA-GSFC/CRESST-UMBC.')
     print('    On behalf of the Fermi-LAT Collaboration.\n')
     print('    This is a framework created to prepare Fermi-LAT data')
     print('    for some cross-correlation analyses. \n')
-    print(('    (Fermi data release %s). \n\n' %FERMI_DATA_RELEASE))
+    print('    (Fermi data release %s). \n\n' %FERMI_DATA_RELEASE)
 
 if __name__ == '__main__':
     startmsg()

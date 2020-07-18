@@ -43,17 +43,17 @@ RUN make && make clean
 RUN /Polspice/bin/spice -help
 
 WORKDIR /tmp
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh
 RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/ && mkdir /run_xgam/output
 
-# Install anaconda3
-RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda3
-ENV PATH /run_xgam/anaconda3/bin:$PATH
+# Install Anaconda2
+RUN bash Miniconda2-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda2
+ENV PATH /run_xgam/anaconda2/bin:$PATH
 
 # Install healpy and fermitools
 RUN conda update -n base -c defaults conda
 RUN conda config --add channels conda-forge
-RUN conda create -n fermi -c conda-forge/label/cf201901 -c fermi fermitools -y
+RUN conda create -n fermi -c conda-forge/label/cf201901 -c fermi fermitools
 RUN conda install -y --name fermi healpy numba
 
 RUN apt-get update && apt-get install -y libgl1-mesa-dev
@@ -73,8 +73,8 @@ COPY Xgam /run_xgam/Xgam
 
 # Creating bashrc file
 RUN echo "echo 'Setting Xgam environment...'" > /root/.bashrc \
-#RUN echo "export PATH=/run_xgam/anaconda3/bin:$PATH" >> /root/.bashrc \
-   && echo "export PATH=/run_xgam/anaconda3/envs/fermi/bin:$PATH" >> /root/.bashrc \
+#RUN echo "export PATH=/run_xgam/anaconda2/bin:$PATH" >> /root/.bashrc \
+   && echo "export PATH=/run_xgam/anaconda2/envs/fermi/bin:$PATH" >> /root/.bashrc \
    && echo "export PYTHONPATH=:/run_xgam/:${PYTHONPATH}" >> /root/.bashrc \
    && echo "export PATH=/run_xgam/Xgam/bin:${PATH}" >> /root/.bashrc \
    && echo "export P8_DATA=/archive/home/Xgam/fermi_data" >> /root/.bashrc \

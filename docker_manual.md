@@ -34,4 +34,5 @@ docker stop -t 5 Xgam_machine
 ```
 
 
-python bin/mkdataselection.py -c config/config_dataselection.py
+python bin/mkdataselection.py -c config/config_dataselection_6y.py
+python bin/mkdataselection.py -c config/config_dataselection_10y.py

@@ -1,0 +1,14 @@
+version: '3'
+services:
+  xgam_machine:
+    build: .
+    image: xgam:latest
+    volumes:
+      - 'Xgam:/run_xgam/Xgam'
+      - 'F:\Users\Aure\Documents\fermi_data:/archive/home/Xgam/fermi_data'
+    stdin_open: true
+    tty: true
+    container_name: "xgam_machine"
+volumes:
+    Xgam:
+    fermi_data:

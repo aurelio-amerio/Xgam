@@ -328,7 +328,7 @@ def mask_south(LAT_LINE, NSIDE):
     print('Mask for the southern hemishere activated')
     NPIX = hp.pixelfunc.nside2npix(NSIDE)
     BAD_PIX = []
-    iii = list(range(NPIX))
+    iii = range(NPIX)
     x,y,z = hp.pix2vec(NSIDE,iii)
     lon,lat = hp.rotator.vec2dir(x,y,z,lonlat=True)
     for i,b in enumerate(lat):
@@ -347,7 +347,7 @@ def mask_north(LAT_LINE, NSIDE):
     print('Mask for the northen hemishere activated')
     NPIX = hp.pixelfunc.nside2npix(NSIDE)
     BAD_PIX = []
-    iii = list(range(NPIX))
+    iii = range(NPIX)
     x,y,z = hp.pix2vec(NSIDE,iii)
     lon,lat = hp.rotator.vec2dir(x,y,z,lonlat=True)
     for i,b in enumerate(lat):

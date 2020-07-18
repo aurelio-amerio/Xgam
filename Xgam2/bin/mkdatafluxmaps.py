@@ -167,7 +167,7 @@ def mkRestyle(**kwargs):
                             if bincalc == 'CENTER':
                                 emap_mean = hp.read_map(line.replace('\n', ''), field=mb)
                             elif bincalc == 'EDGE':
-                                emap = hp.read_map(line.replace('\n', ''), field=list(range(mb, mb+2)))
+                                emap = hp.read_map(line.replace('\n', ''), field=range(mb, mb+2))
                                 emap_mean = np.sqrt(emap[0]*emap[1])
                             else:
                                 logger.info('ATT: Invalid bincalc!')

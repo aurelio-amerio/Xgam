@@ -299,7 +299,7 @@ def main():
         plt.plot(np.arange(1501), wpix[:1501], '--', color='silver', label='W$_{pix}$')
         for i, (emin, emax) in enumerate(zip(_emin, _emax)):
             wb = get_1D_wbeam(out_wbeam_txt, spec, e_min=emin, e_max=emax)
-            print(('wl(l=1)**2 = %e'%(wb(2)*wpix[1])**2))
+            print('wl(l=1)**2 = %e'%(wb(2)*wpix[1])**2)
             wb.plot(show=False, label='%.2f-%.2f GeV'%(emin/1000, emax/1000), color='%s'%c[i])
             
         plt.ylabel('W$_{beam}$', size=15)

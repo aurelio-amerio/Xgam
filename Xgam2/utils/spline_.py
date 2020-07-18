@@ -596,7 +596,7 @@ class xInterpolatedBivariateSpline(xBivariateSplineBase, RectBivariateSpline):
             _x.append(numpy.sum(_yy.y))
         _x = numpy.array(_x)
         fmt = dict(xname='Vertical projection', yname=self.xname, yunits=self.xunits)
-        print((len(self.x), 'aaaaa'))
+        print(len(self.x), 'aaaaa')
         return xInterpolatedUnivariateSplineLinear(_x, _y, **fmt)
 
     def build_vppf(self):
