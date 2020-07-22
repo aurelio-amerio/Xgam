@@ -25,7 +25,7 @@ from Xgam.utils.ScienceTools_ import gtEbindef
 
 
 
-OUT_LABEL = 'w9w632_SV_t1_nside64'
+OUT_LABEL = 'w9w322_SV_t1_nside64'
 
 #start and stop week number to be selected in FT1 and FT2 files
 START_WEEK = 9
