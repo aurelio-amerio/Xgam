@@ -42,9 +42,9 @@ SC_FILE = os.path.join(FT_DATA_FOLDER, 'spacecraft', 'lat_spacecraft_merged.fits
 # other settings
 ZMAX = 90
 EVCLASS = 2048
-EVTYPE = 32
+EVTYPE = 1
 IRFS = 'P8R3_SOURCEVETO_V2'
-HPX_MAP_ORDER = 6
+HPX_MAP_ORDER = 7
 FILTER_CUT='DATA_QUAL==1&&LAT_CONFIG==1&&LAT_MODE==5&&IN_SAA!=T'+\
                '&&((ABS(ROCK_ANGLE)<52))'
 

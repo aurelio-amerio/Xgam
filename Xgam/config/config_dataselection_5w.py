@@ -25,11 +25,11 @@ from Xgam.utils.ScienceTools_ import gtEbindef
 
 
 
-OUT_LABEL = 'w9w322_SV_t1'
+OUT_LABEL = 'w9w14_SV_t32'
 
 #start and stop week number to be selected in FT1 and FT2 files
 START_WEEK = 9
-STOP_WEEK = 322
+STOP_WEEK = 14
 
 # minumum and maximum energy and energy bin number to generate fits file
 E_MIN = 1000
@@ -42,9 +42,9 @@ SC_FILE = os.path.join(FT_DATA_FOLDER, 'spacecraft', 'lat_spacecraft_merged.fits
 # other settings
 ZMAX = 90
 EVCLASS = 2048
-EVTYPE = 1
+EVTYPE = 32
 IRFS = 'P8R3_SOURCEVETO_V2'
-HPX_MAP_ORDER = 7
+HPX_MAP_ORDER = 6
 FILTER_CUT='DATA_QUAL==1&&LAT_CONFIG==1&&LAT_MODE==5&&IN_SAA!=T'+\
                '&&((ABS(ROCK_ANGLE)<52))'
 

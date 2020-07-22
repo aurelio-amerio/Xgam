@@ -67,7 +67,7 @@ WORKDIR /run_xgam
 # RUN git clone https://github.com/nmik/Xgam.git
 
 # copy Xgam package to /run_xgam
-COPY Xgam /run_xgam/Xgam
+# COPY Xgam /run_xgam/Xgam
 
 #RUN ls /run_xgam/Xgam/bin -lh
 

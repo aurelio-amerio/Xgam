@@ -4,7 +4,6 @@ To build the docker image, cd to the main folder and type
 ```bash
 docker build -t xgam:latest .
 ```
-
 Alternatively one can also pull the built image from docker hub using the following command:
 ```bash
 docker pull aureamerio/xgam:latest
@@ -19,20 +18,38 @@ Please download only the files you intend to use, as the whole dataset takes mor
 ## Spin the container
 To start the container type for the first time, run the following command:
 ```bash
-docker run -it -v /f/Users/Aure/Documents/fermi_data:/archive/home/Xgam/fermi_data --name Xgam_machine xgam:latest
+docker run -it -v /f/Users/Aure/Documents/fermi_data:/archive/home/Xgam/fermi_data -v /f/Users/Aure/Documents/GitHub/Xgam/Xgam:/run_xgam/Xgam --name Xgam_machine xgam:latest
 ```
 Place replace `/f/Users/Aure/Documents/fermi_data` with the path to your fermi_data folder.
 
 In the succesive iterations, you can directly start and attach the container shell with the following command:
 ```bash
-docker start -a -i Xgam_machine
+docker start -a -i xgam_machine
 ```
 
 To stop/kill the machine use the command:
 ```bash
-docker stop -t 5 Xgam_machine
+docker stop -t 5 xgam_machine
 ```
 
+It is often usefull to chain those commands in a single one, not to forget to close the container.
 
-python bin/mkdataselection.py -c config/config_dataselection_6y.py
-python bin/mkdataselection.py -c config/config_dataselection_10y.py
+In unix, type:
+```bash
+docker start -a -i xgam_machine && docker stop -t 5 xgam_machine
+```
+
+In windows, type:
+```bash
+docker start -a -i xgam_machine; docker stop -t 5 xgam_machine
+```
+
+# Docker Compose
+An alternative way to use this container is through `docker-compose`. <br>
+In this case before you can spin the container, it is needed to edit the file `docker-compose.yml` and adjust the path to fermi_data.
+To spin the container, first you need to open a shell, cd to the git repository and type `docker-compose up` to start the container. `docker-compose` will download the image and take care of everything. Once the image is running, you can open another shell and type `docker attach xgam_machine` to get access to the shell inside the container. Once you are done, come back to the shell where you typed `docker-compose up` and press `ctrl+c` to gracefully stop the container.
+
+python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_5w.py | tee /archive/home/Xgam/fermi_data/logs/5w_terminal_output.txt
+
+python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_6y.py
+python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_10y.py
