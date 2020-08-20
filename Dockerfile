@@ -42,6 +42,7 @@ RUN cmake .. -DCFITSIO=/cfitsio_latest/lib -DHEALPIX=/Healpix_latest
 RUN make && make clean
 RUN /Polspice/bin/spice -help
 
+RUN  mkdir /run_xgam/ && mkdir /run_xgam/home/
 WORKDIR /tmp
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/ && mkdir /run_xgam/output
@@ -49,6 +50,12 @@ RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdi
 # Install anaconda3
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda3
 ENV PATH /run_xgam/anaconda3/bin:$PATH
+
+# Install Anaconda3
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda3
+ENV PATH /run_xgam/anaconda3/bin:$PATH
+RUN rm -r *.sh
 
 # Install healpy and fermitools
 RUN conda update -n base -c defaults conda
