@@ -18,7 +18,7 @@ Please download only the files you intend to use, as the whole dataset takes mor
 ## Spin the container
 To start the container type for the first time, run the following command:
 ```bash
-docker run -it -v /f/Users/Aure/Documents/fermi_data:/archive/home/Xgam/fermi_data -v /f/Users/Aure/Documents/GitHub/Xgam/Xgam:/run_xgam/Xgam --name Xgam_machine xgam:latest
+docker run -it -v /f/Users/Aure/Documents/fermi_data:/archive/home/Xgam/fermi_data -v /f/Users/Aure/Documents/GitHub/Xgam/Xgam:/run_xgam/Xgam --name Xgam_machine aureamerio/xgam:latest
 ```
 Place replace `/f/Users/Aure/Documents/fermi_data` with the path to your fermi_data folder.
 
