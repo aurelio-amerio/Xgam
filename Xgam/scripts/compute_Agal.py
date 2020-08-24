@@ -5,9 +5,114 @@ import healpy as hp
 import os
 from Xgam.utils.logging_ import logger, startmsg
 from itertools import product
+import matplotlib.pyplot as plt
+
+
+
+
+
 # %%
+galactic_foreground = np.load("/archive/home/Xgam/fermi_data/foreground_fitting/galactic_foreground_1-10GeV.npz")["galactic_foreground"]
+
+exposure_file_path = "/archive/home/Xgam/fermi_data/foreground_fitting/w9w322_SV_t1_nside64_expcube.fits"
+exposure_map = hp.read_map(exposure_file_path, dtype=np.float64)
+
+fermi_map = hp.read_map("/archive/home/Xgam/fermi_data/foreground_fitting/w9w322_SV_t1_nside64_outofbin.fits", dtype=np.float64)
+
+deg=30
+mask_idx = hp.query_strip(64, (90 - deg) * np.pi / 180, (90 + deg) * np.pi / 180)
+mask_map = np.ones(hp.nside2npix(64), dtype=np.int64)
+mask_map[mask_idx]=0
+
+mask_f = '/archive/home/Xgam/fermi_data/fits/Mask_hp64_src2_gp30.fits'
+mask_map2 = hp.read_map(mask_f, dtype=np.int64)
+#%%
+
+mask_map_simple = hp.read_map('/archive/home/Xgam/fermi_data/fits/Mask_n64_simple.fits', dtype=np.int64)
+mask_map_psf = hp.read_map('/archive/home/Xgam/fermi_data/fits/Mask_n64.fits', dtype=np.int64)
+#%%
+hp.mollview(mask_map_simple, title="simple")
+plt.show()
+hp.mollview(mask_map2, title="michela")
+plt.show()
+hp.mollview(mask_map_psf, title="psf")
+plt.show()
 
 #%%
+mask_map2
+
+
+#%%
+
+#%%
+from scipy.special import factorial
+def poisson_likelihood(norm_guess, const_guess, fore_map, data_map, exp=None, sr=None):
+    """
+    Compute the log-likelihood as decribed here:
+    http://iopscience.iop.org/article/10.1088/0004-637X/750/1/3/pdf
+    where the model to fit to data is given by norm*fore_map+const.
+
+    Parameters
+    ----------
+    norm_guess : float
+          initial guess for normalization parameter
+    const_guess : float
+          initial guess for constant parameter
+    fore_map : numpy array
+          helapix map of foreground model
+    data_map : numpy array
+          helapix map of data. It could be either a count map or a flux map.
+          If a counts map is given, an exposure map should be given too. See
+          next parameter.
+    exp :  numpy array or None
+          helapix map of the exposure. Should be given if the data map is in
+          counts (beacause foreground map is in flux units by default and it
+          needs to be turned to counts to be fitted). While, If data map is
+          in flux units, do not declare this parameter, which is None by
+          default.
+    sr : float or None
+          pixel area -> 4*pi/Npix
+          
+    Returns
+    -------
+    float
+        likelihood value.
+        
+    """
+    a = norm_guess
+    b = const_guess
+    
+    
+
+    # lambda_arr = data_map
+    # k_arr = (a*fore_map+b)*exp*sr
+    # lambda_arr = (a*fore_map+b)*exp*sr # valore previsto 
+    # k_arr = data_map # valore osservato
+    # k_factorial = factorial(k_arr)
+    # log_k_factorial = np.log(k_factorial)
+    # factorial_data = factorial(data_map)
+    # factorial_data = data_map
+
+    lh = 0
+    if exp is not None:
+        lambda_arr = (a*fore_map+b)*exp*sr # valore previsto 
+        k_arr = data_map # valore osservato
+        k_factorial = factorial(k_arr)
+        log_k_factorial = np.log(k_factorial)
+
+        lh = np.sum(log_k_factorial - k_arr*np.log(lambda_arr) + lambda_arr)
+
+        
+    else:
+        lambda_arr = (a*fore_map+b) # valore previsto 
+        k_arr = data_map # valore osservato
+        k_factorial = factorial(k_arr)
+        log_k_factorial = np.log(k_factorial)
+
+        lh = np.sum(log_k_factorial - k_arr*np.log(lambda_arr) + lambda_arr)
+
+    return lh
+
 
 def fit_foreground_poisson(fore_map, data_map, mask_map=None, n_guess=1.,
                            c_guess=0.1,exp=None, smooth=False, show=False):
@@ -70,8 +175,8 @@ def fit_foreground_poisson(fore_map, data_map, mask_map=None, n_guess=1.,
     data_repix = np.array(hp.ud_grade(data_map, nside_out=nside_out, power=-2))
     _unmask = np.where(mask > 1e-30)[0]
 
-    norm_list = np.linspace(norm_guess-0.2, norm_guess+0.2, 1000)
-    igrb_list = np.logspace(np.log10(igrb_guess*0.01), np.log10(igrb_guess*10), 1000)
+    norm_list = np.linspace(norm_guess-0.8, norm_guess+0.8, 200)
+    igrb_list = np.logspace(np.log10(igrb_guess*0.01), np.log10(igrb_guess*10), 200)
     
     logger.info('-------------------------------')
     logger.info('Minimization likelihood run1...')
@@ -82,14 +187,14 @@ def fit_foreground_poisson(fore_map, data_map, mask_map=None, n_guess=1.,
         exposure = np.array(hp.ud_grade(exposure, nside_out=nside_out))
         areapix = 4*np.pi/(len(data_repix))
         for i,j in product(norm_list, igrb_list):
-            lh = ffit.poisson_likelihood(i, j, fore_repix[_unmask],
+            lh = poisson_likelihood(i, j, fore_repix[_unmask],
                                     data_repix[_unmask],
                                     exp=exposure[_unmask],
                                     sr=areapix)
-            lh_list.append(np.minimum(lh, 1e30))
+            lh_list.append(lh)
     else:
         for i,j in product(norm_list, igrb_list):
-            lh = ffit.poisson_likelihood(i, j, fore_repix[_unmask], data_repix[_unmask])
+            lh = poisson_likelihood(i, j, fore_repix[_unmask], data_repix[_unmask])
             lh_list.append(lh)
     
     lh_list = np.array(lh_list)
@@ -207,46 +312,46 @@ def fit_foreground_poisson(fore_map, data_map, mask_map=None, n_guess=1.,
         
     return norm_min, igrb_min, norm_sxerr, norm_dxerr, igrb_sxerr, igrb_dxerr
 
-
-# %%
-
-# %%
-galactic_foreground = np.load("/archive/home/Xgam/fermi_data/foreground_fitting/galactic_foreground_1-10GeV.npz")["galactic_foreground"]
-
-exposure_file_path = "/archive/home/Xgam/fermi_data/foreground_fitting/w9w322_SV_t1_nside64_expcube.fits"
-exposure_map = hp.read_map(exposure_file_path, dtype=np.float64)
-
-fermi_map = hp.read_map("/archive/home/Xgam/fermi_data/foreground_fitting/w9w322_SV_t1_nside64_outofbin.fits", dtype=np.float64)
-
-deg=30
-mask_idx = hp.query_strip(64, (90 - deg) * np.pi / 180, (90 + deg) * np.pi / 180)
-mask_map = np.ones(hp.nside2npix(64), dtype=np.int64)
-mask_map[mask_idx]=0
-
-mask_f = '/archive/home/Xgam/fermi_data/fits/Mask_hp64_src2_gp30.fits'
-mask_map2 = np.ones(hp.nside2npix(64), dtype=np.int64)
-mask_map2[hp.read_map(mask_f, dtype=np.int32)]=0
-
-
 #%%
-# ffit.poisson_likelihood(1.8, 1e-7, galactic_foreground[mask_map2], fermi_map[mask_map2], exp=exposure_map[mask_map2], sr=4*np.pi/hp.nside2npix(64))
+mask = mask_map_psf
+Agal=1.07
+Fiso=1e-7
+
+
+mask = mask_map_psf
+def arg(x):
+    return poisson_likelihood(x[0], x[1], galactic_foreground[mask], fermi_map[mask], exp=exposure_map[mask], sr=4*np.pi/hp.nside2npix(64))
+def arg2(x):
+    return ffit.poisson_likelihood(x[0], x[1], galactic_foreground[mask], fermi_map[mask], exp=exposure_map[mask], sr=4*np.pi/hp.nside2npix(64))
+
+print(arg([Agal, Fiso]))
+print(arg2([Agal, Fiso]))
+#%%
+from scipy.optimize import minimize
+#%%
+res=minimize(arg, x0=(1.0, 0.1), bounds=((0.0, 2.9),(1e-10, 1)), tol=1e-3)
+#%%
+res.x
 #%%
 fit_foreground_poisson(galactic_foreground, fermi_map, mask_map=mask_map2, n_guess=1.,
-                           c_guess=1e-7,exp=exposure_map, smooth=False, show=False)
+                           c_guess=1e-7, exp=exposure_map, smooth=False, show=False)
 # %%
 
 # #%%
 # mask.shape
-# #%%
-# import matplotlib.pyplot as plt
-# #%%
-# hp.mollview(galactic_foreground, norm="log")
-# plt.show()
+#%%
+import matplotlib.pyplot as plt
+#%%
+hp.mollview(exposure_map, norm="log")
+plt.show()
 
-# hp.mollview(exposure_map, norm="log")
-# plt.show()
+srpixel = 4*np.pi/hp.nside2npix(64)
+hp.mollview(galactic_foreground*exposure_map*srpixel, norm="log")
+plt.show()
 
-# hp.mollview(fermi_map, norm="log")
-# plt.show()
-# #%%
-# hp.mollview(mask)
+
+hp.mollview(fermi_map, norm="log")
+plt.show()
+#%%
+hp.mollview(mask_map2)
+# %%

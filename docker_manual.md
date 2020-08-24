@@ -48,8 +48,3 @@ docker start -a -i xgam_machine; docker stop -t 5 xgam_machine
 An alternative way to use this container is through `docker-compose`. <br>
 In this case before you can spin the container, it is needed to edit the file `docker-compose.yml` and adjust the path to fermi_data.
 To spin the container, first you need to open a shell, cd to the git repository and type `docker-compose up` to start the container. `docker-compose` will download the image and take care of everything. Once the image is running, you can open another shell and type `docker attach xgam_machine` to get access to the shell inside the container. Once you are done, come back to the shell where you typed `docker-compose up` and press `ctrl+c` to gracefully stop the container.
-
-python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_5w.py | tee /archive/home/Xgam/fermi_data/logs/5w_terminal_output.txt
-
-python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_6y.py
-python Xgam/bin/mkdataselection.py -c Xgam/config/config_dataselection_10y.py

@@ -60,8 +60,6 @@ def mask_extsrc(CAT_FILE, nside=512):
 
        cat_file: str
            .fits file of the sorce catalog
-       mask_rad: float
-           radius around each source definig bad pixels to mask
        nside: int
            healpix nside parameter
     """
