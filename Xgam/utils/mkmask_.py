@@ -262,6 +262,7 @@ def mask_src_fluxPSFweighted_2(CAT_FILE, CAT_EXT_FILE, PSF_SPLINE, E_MIN, E_MAX,
     FLUX_RATIO = np.array(FLUX)/flux_min
     RADdeg = psf_en*np.sqrt(2*np.log10(5*FLUX_RATIO))
     RADrad = np.radians(RADdeg)
+    print(RADdeg)
     logger.info('Masking the extended Sources')
     logger.info('-> 10 deg around CenA and LMC')
     logger.info('-> 5 deg around the remaining')
