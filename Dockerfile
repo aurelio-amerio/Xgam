@@ -45,7 +45,7 @@ RUN /Polspice/bin/spice -help
 RUN  mkdir /run_xgam/ && mkdir /run_xgam/home/
 WORKDIR /tmp
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/ && mkdir /run_xgam/output
+RUN mkdir /archive/ && mkdir /archive/home/ && mkdir /archive/home/Xgam/ && mkdir /archive/home/Xgam/fermi_data/ && mkdir /run_xgam/output
 
 # Install anaconda3
 RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p /run_xgam/anaconda3
